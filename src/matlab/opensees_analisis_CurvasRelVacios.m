@@ -9,7 +9,7 @@ cov = 0.25;
 l_ac = 4;
 
 earth_quake_file = "earth_quake_0.out";
-cortes = [4,6,8];                          % Corte que será analizado en Opensees [nodos]. i.e. corte = 4 es un corte a 3m.
+cortes = [3,5,7];                          % Corte que será analizado en Opensees [nodos]. i.e. corte = 4 es un corte a 3m.
 
 current_path = fileparts(matlab.desktop.editor.getActiveFilename);
 opensees_path = join([current_path, '\..\opensees\bin\']);
@@ -80,8 +80,8 @@ for corte_index = 1:length(cortes)
     opensees_arg = [opensees_executable_file, ' '... 
                     tmp_file];                  
     clear opensees_command
-    folder_to_test = tmp_folder + "\*.out", opensees_results_folder + "\corte_" + string(corte);
-    if exist(folder_to_test, "dir")
+    folder_to_test = opensees_results_folder + "\corte_" + string(corte);
+    if ~exist(folder_to_test, "dir")
 
         %% PRESIÓN DE PORORS, e, ESFUEROS TOTALES Y ESFUERZOS EFECTIVOS
         
