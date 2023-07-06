@@ -76,7 +76,7 @@ title ("LL [%]");
 save('suelo_espacio','suelo_0')
 i = 0;
 file_exist = 1;
-while file_exist == 1
+while file_exist ~= 0
     folder_name = "suelo_" + string(i);
     tmp_folder = join([current_path, '\..\..\resultados\', tamano_suelo_folder + "\", sub_folder + "\",folder_name]);
     file_exist = exist( tmp_folder, "dir");
