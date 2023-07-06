@@ -4,19 +4,19 @@ function fileGeneration(suelo, corte, x_tamano, dx)
 
     % verificar si se pueden emplear parametros definidos en el tamano del
     % suelo generado considerando el eje x
-    x=0:dx:abs(x_tamano); x=x';
-    xint=dx/2:dx:abs(x_tamano)-dx/2; xint=xint';        % int = intermedio
+    x=0:abs(dx):abs(x_tamano); x=x';
+    xint=abs(dx/2):abs(dx):abs(x_tamano)-abs(dx/2); xint=xint';        % int = intermedio
     xgrafica = flip(xint);
     
     % rho
-    Rhoint = interpolationPoints( x, suelo.Rho( :, corte), xint)
-    
+    Rhoinv = interpolationPoints( x, suelo.Rho( :, corte), xint);
+    writeFile('rho0.txt', 'rho', Rhoinv)
     %         figure 
     %         plot (Rhoinv,xgrafica)
     %         set(gca,'YDir','reverse')
     
     % Vs0
-    Vsint = interpolationPoints( x, suelo.Vs( :, corte), xint);
+    Vsinv = interpolationPoints( x, suelo.Vs( :, corte), xint);
         
     %         figure 
     %         plot (Vsinv,xgrafica)
@@ -78,7 +78,7 @@ function fileGeneration(suelo, corte, x_tamano, dx)
     
     %% Generación de archivos para Open Sees
     
-    writeFile('rho0.txt', 'rho', Rhoinv)
+    
 
 %     os_rho0 = fopen('rho0.txt', 'w');
 %     for i = 1:length(Rhoinv)
@@ -297,10 +297,10 @@ end
 function writeFile(file_path, variable_string_name, variable_to_write)
     % crea el archivo definido por "file_path" con el contenido de la
     % variable definida en "variable_to_write"
-    
+
     tmp_file = fopen(file_path, 'w');
     for i = 1:length( variable_to_write)
-        str = ['set ' + variable_string_name + '(' num2str(i) ') ' num2str( variable_to_write(i))];
+        str = join(['set ', variable_string_name, '(', num2str(i), ') ', num2str( variable_to_write(i))]);
         fprintf(tmp_file, '%s\n', str);
     end
     fclose(tmp_file);
