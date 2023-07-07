@@ -1,8 +1,19 @@
 clc, clearvars ;
 
+tic
+
 current_path = fileparts(matlab.desktop.editor.getActiveFilename);
 addpath(current_path)
 tmp_folder = join([current_path, '\..\..\temp\']);
+
+if ~exist( tmp_folder, "dir")
+    mkdir( tmp_folder)
+end
+
+% agregar verificar existencia de carpeta temporal
+% normrnd statistics and machine learning toolbo
+% 
+
 cd( tmp_folder)
 
 clear ans suelo_0
@@ -85,6 +96,8 @@ end
 mkdir(tmp_folder);
 tmp_file = join([tmp_folder , "\suelo_espacio.mat"]);
 copyfile("suelo_espacio.mat", tmp_file);
+
+toc
 
 % save('dx','dx')
 % save('dy','dy')
