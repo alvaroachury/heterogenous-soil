@@ -1,22 +1,7 @@
 clc, clearvars ;
 
-tic
-
-current_path = fileparts(matlab.desktop.editor.getActiveFilename);
-addpath(current_path)
-tmp_folder = join([current_path, '\..\..\temp\']);
-
-if ~exist( tmp_folder, "dir")
-    mkdir( tmp_folder)
-end
-
-% agregar verificar existencia de carpeta temporal
-% normrnd statistics and machine learning toolbo
-% dist 
-
-cd( tmp_folder)
-
-clear ans suelo_0
+% variables de entrada. se modifican de acuerdo a las caracteristicas del
+% suelo que se desea generar
 
 x_tamano = 50;
 dx = 1;
@@ -25,8 +10,27 @@ dy = -1;
 ll_medio = 210;
 cov = 0.25;
 l_ac = 4;
-vLL = [];
 
+tic
+
+% se define el
+current_path = fileparts(matlab.desktop.editor.getActiveFilename);
+addpath(current_path)
+cd(current_path)
+
+tmp_folder = join([current_path, '\..\..\temp\']);
+
+if ~exist( tmp_folder, "dir")
+    mkdir( tmp_folder)
+end
+
+% normrnd statistics and machine learning toolbo
+% dist 
+cd( tmp_folder)
+
+clear ans suelo_0
+
+vLL = [];
 
 suelo_0 = sueloGeneral(x_tamano, dx, y_tamano, dy, ...
                        ll_medio, cov, l_ac, vLL);
@@ -58,11 +62,6 @@ sigma = 1;          % Desviación Estándar
 %rng('default')     % Usar este comando para comprobar resultados
 
 epsilon = normrnd(mu,sigma,[n,1]);
-
-% for i=1:n
-%     ep= normrnd(mu,sigma);
-%     epsilon(i,1)= ep;
-% end
 
 u_n = ones(n,1)*suelo_0.ll_medio;
 LL = S*epsilon + u_n;
@@ -98,19 +97,3 @@ tmp_file = join([tmp_folder , "\suelo_espacio.mat"]);
 copyfile("suelo_espacio.mat", tmp_file);
 
 toc
-
-% save('dx','dx')
-% save('dy','dy')
-% save('dimx','dimx')
-% save('dimy','dimy')
-% 
-% %xg=100:10:500
-% %yg=
-% %scatter(epsilon,LL)
-% 
-% %%%
-% function [d] = dist (act,final)
-%     act();
-%     final();
-%     d = sqrt((act(1,1)-final(1,1))^2+(act(1,2)- final(1,2))^2);
-% end
