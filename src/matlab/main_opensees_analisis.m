@@ -9,11 +9,7 @@ cov = 0.25;
 l_ac = 4;
 folder_name = "suelo_0";
 earth_quake_file = "earthquake0.out";
-cortes = [7];                          % Corte que será analizado en Opensees [nodos]. i.e. corte = 4 es un corte a 3m.
-
-% earth_quake_file error copieandolo ruta no debe contener caracteres
-% especiales ni espacios
-% 214 - 215
+cortes = [8];                          % Corte que será analizado en Opensees [nodos]. i.e. corte = 4 es un corte a 3m.
 
 current_path = fileparts(matlab.desktop.editor.getActiveFilename);
 opensees_path = join([current_path, '\..\opensees\bin\']);
@@ -22,10 +18,10 @@ opensees_executable_file = join([current_path, '\..\opensees\bin\openSees.exe'])
 tamano_suelo_folder = "x_" + string(x_tamano)+ "--" + "y_" + string(y_tamano) + "--" + "dx_" + string(dx) + "--" + "dy_" + string(dy);
 sub_folder = "cov_" + string(cov)+ "--" + "lac_" + string(l_ac);
 
-soil_folder = join([current_path, '\..\..\resultados\', tamano_suelo_folder + "\", sub_folder + "\",folder_name]);
+soil_folder = strrep(join([current_path, '\..\..\resultados\', tamano_suelo_folder + "\", sub_folder + "\",folder_name]), " ", "");
 soil_file = fullfile( soil_folder, "suelo_espacio.mat");    
 
-opensees_results_folder = join([soil_folder,"\opensees\",extractBefore(earth_quake_file,".out")]);
+opensees_results_folder = strrep(join([soil_folder,"\opensees\",extractBefore(earth_quake_file,".out")]), " ", "");
 
 % Es necesario cambiar la ubicacion a donde se encuentra el ejecutable del 
 % del opensees para garantizar que no se generen errores al interpretar el 
@@ -33,7 +29,7 @@ opensees_results_folder = join([soil_folder,"\opensees\",extractBefore(earth_qua
 %cd(opensees_path) 
 
 template_model_file = strrep(join([current_path, '\..\..\archivos\suelo_het_00.tcl']), " ", "");
-template_earthquake_file = join([current_path, '\..\..\archivos\earthquake0.OUT']);
+template_earthquake_file = strrep(join([current_path, '\..\..\archivos\earthquake0.OUT']), " ", ""));
 
 clear suelo_0
 load( soil_file, 'suelo_0')
@@ -85,7 +81,8 @@ for corte_index = 1:length(cortes)
     opensees_arg = [opensees_executable_file, ' '... 
                     tmp_file];                  
     clear opensees_command
-    folder_to_test = opensees_results_folder + "\corte_" + string(corte);
+    folder_to_test = opensees_results_folder + "\corte_" + string(corte) + "\simulacion";
+
     if ~exist(folder_to_test, "dir")
 
         %% PRESIÓN DE POROS, e, ESFUEROS TOTALES Y ESFUERZOS EFECTIVOS
@@ -97,12 +94,8 @@ for corte_index = 1:length(cortes)
         
         esfT = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);       % Matriz Esfuerzos Totales
         esfeff = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);     % Matriz Esfuerzos Effectivos
-    %     suelo_0.gsat = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);     % Matriz gamma (asumido condición parcialmente saturado)
-        
         vIP = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     Rho = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     suelo_0.nu = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     cohesion = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
+
         %% Gmax 
         
         % Gmax_pp en MPa                       
@@ -112,9 +105,6 @@ for corte_index = 1:length(cortes)
     
         vK0 = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);          % Matriz con los valores de K0 para cada nodo. Ecuación de Braja Das.
         vSigma0 = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     suelo_0.Gmax_final = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     Vs = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
-    %     suelo_0.gammaref = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
         esfT = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
         esfeff = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
         relv = zeros(( suelo_0.y_tamano / suelo_0.dy) + 1, ( suelo_0.x_tamano / suelo_0.dx) + 1);
@@ -216,8 +206,8 @@ for corte_index = 1:length(cortes)
             mkdir(opensees_results_folder);
         end
         
-        copyfile( tmp_folder + "\*.out", opensees_results_folder + "\corte_" + string(corte))
-        copyfile( tmp_folder + "\*.txt", opensees_results_folder + "\corte_" + string(corte))
+        copyfile( tmp_folder + "\*.out", opensees_results_folder + "\corte_" + string(corte) + "\simulacion\heterogeneo" )
+        copyfile( tmp_folder + "\*.txt", opensees_results_folder + "\corte_" + string(corte) + + "\simulacion\heterogeneo" )
         
         delete(tmp_folder + "*.out")
         delete(tmp_folder + "*.tcl")
@@ -229,7 +219,6 @@ for corte_index = 1:length(cortes)
         % agregar diferentes analisis comparativo de resultados espectro de frecuencia ..
         % espectro acelarcion y amplitud maxima de señal de aceleracion
 
-        
 
 
     else
