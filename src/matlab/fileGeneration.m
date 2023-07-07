@@ -1,9 +1,24 @@
 function fileGeneration(suelo, corte, x_tamano, dx)
-    % Permite generar los archivos que contienen los parametros requeridos
-    % para correr la simulacion del modelo empleando opensees
+    % crea archivos .out requeridos para evaluacion de modelo con opensees
+    %% Descripcion
+    % Permite generar los archivos que contienen las propiedades de los 
+    % elementos que definen el modelo del suelo requeridos por el archivo
+    % tcl empleado como plantilla para correr la simulacion del modelo 
+    % en opensees
+    %% Syntax:
+    %    fileGeneration(suelo, corte, x_tamano, dx)
+    %% Input
+    % Valores de entrada requeridos:
+    %   suelo               - objeto que contiene la informacion requerida 
+    %                         y que define las propiedades del suelo
+    %   corte               - Arreglo de datos de los puntos en el eje x 
+    %                         sobre los cuales se desea realizar el corte.
+    %   x_tamano            - tamaño total en el eje y
+    %   dx                  - discretizacion del eje y
 
     % verificar si se pueden emplear parametros definidos en el tamano del
     % suelo generado considerando el eje x
+    
     x=0:abs(dx):abs(x_tamano); x=x';
     xint=abs(dx/2):abs(dx):abs(x_tamano)-abs(dx/2); xint=xint';        % int = intermedio
     xgrafica = flip(xint);
@@ -11,38 +26,22 @@ function fileGeneration(suelo, corte, x_tamano, dx)
     % rho
     Rhoinv = interpolationPoints( x, suelo.Rho( :, corte), xint);
     writeFile('rho0.txt', 'rho', Rhoinv)
-    %         figure 
-    %         plot (Rhoinv,xgrafica)
-    %         set(gca,'YDir','reverse')
-    
+
     % Vs0
     Vsinv = interpolationPoints( x, suelo.Vs( :, corte), xint);
+    writeFile('Vs0.txt', 'Vs', Vsinv)
         
-    %         figure 
-    %         plot (Vsinv,xgrafica)
-    %         set(gca,'YDir','reverse')
-    
     % nu0
     nuinv = interpolationPoints( x, suelo.nu( :, corte), xint);
-    
-    %         figure 
-    %         plot (nuinv,xgrafica)
-    %         set(gca,'YDir','reverse')
-    
+    writeFile('nu0.txt', 'nu', nuinv)
+
     %cohesion
     cohesioninv = interpolationPoints( x, suelo.cohesion( :, corte), xint);
-    
-    %         figure 
-    %         plot (cohesioninv,xgrafica)
-    %         set(gca,'YDir','reverse')
-    
+    writeFile('cohesion.txt', 'cohesion', cohesioninv)    
     
     % gammaref
     gammarefinv = interpolationPoints( x, suelo.gammaref( :, corte), xint);
     
-    %         figure 
-    %         plot (gammarefinv,xgrafica)
-    %         set(gca,'YDir','reverse')
     
     %% CURVAS DE DEGRADACIÓN
     
@@ -75,38 +74,6 @@ function fileGeneration(suelo, corte, x_tamano, dx)
     fclose(archivo);
     degradacionG = degradacionG';
     
-    
-    %% Generación de archivos para Open Sees
-    
-    
-
-%     os_rho0 = fopen('rho0.txt', 'w');
-%     for i = 1:length(Rhoinv)
-%         str = ['set rho(' num2str(i) ') ' num2str(Rhoinv(i))];
-%         fprintf(os_rho0, '%s\n', str);
-%     end
-%     fclose(os_rho0);
-    
-    writeFile('Vs0.txt', 'Vs', Vsinv)
-
-%     os_Vs0 = fopen('Vs0.txt', 'w');
-%     for i = 1:length(Vsinv)
-%         str = ['set Vs(' num2str(i) ') ' num2str(Vsinv(i))];
-%         fprintf(os_Vs0, '%s\n', str);
-%     end
-%     fclose(os_Vs0);
-    
-    writeFile('nu0.txt', 'nu', nuinv)
-
-%     os_nu0 = fopen('nu0.txt', 'w');
-%     for i = 1:length(nuinv)
-%         str = ['set nu(' num2str(i) ') ' num2str(nuinv(i))];
-%         fprintf(os_nu0, '%s\n', str);
-%     end
-%     fclose(os_nu0);
-    
-    writeFile('cohesion.txt', 'cohesion', cohesioninv)
-
 %     os_cohesion = fopen('cohesion.txt', 'w');
 %     for i = 1:length(cohesioninv)
 %         str = ['set cohesion(' num2str(i) ') ' num2str(cohesioninv(i))];
