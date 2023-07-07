@@ -1,6 +1,7 @@
 classdef sueloGeneral
-    % Se definen y almacenan caracteristicas generales del suelo como
-    % dimenciones y parametros relacionados con la variabilidad del mismo
+    % Se define o0bjeto que permite almacenar las propiedades del suelo
+    % heterogeneo, asi como los parametros que definen su dimension.
+
     properties
         x_tamano
         y_tamano
@@ -24,11 +25,31 @@ classdef sueloGeneral
     methods
         function self = sueloGeneral(x_tamano, dx, y_tamano, dy, ...
                                      ll_medio, cov, l_ac, vLL)
-            % l_medio: Valor medio del LL 
-            % cov: COV = 0.3 (JP)    COV = 0.25 (Muñoz & Caicedo)
-            % desv: Desv = COV*v_medio;         % Desviación estándar (%)
-            % l_ac: Longitud de autocorrelación (m) (Lt)
-
+            % se inicializa objeto que define la variable en donde se almacenan
+            % las propiedades y dimensiones del suelo heterogeneo.
+            %% Descripcion
+            % Permite crear un objeto que contienen toda la infomacion que
+            % define a un suelo heterogeneo creado aleatoriamente
+            %% Syntax:
+            %    nombre_suelo = sueloGeneral(x_tamano, dx, y_tamano, dy, ...
+                                     ll_medio, cov, l_ac, vLL)
+            %% Input
+            % Valores de entrada requeridos:
+            %   nombre_suelo        - objeto que contiene la informacion requerida 
+            %                         y que define las propiedades del
+            %                         suelo heterogeneo
+            %   x_tamano            - tamaño total en el eje y
+            %   dx                  - discretizacion del eje y
+            %   y_tamano            - tamaño total en el eje y
+            %   dy                  - discretizacion del eje y
+            %   ll_medio            - Limite liquido medio.
+            %   cov                - covarianza.
+            %   l_ac               - longitud de autocorrelacion.
+            %   vll                - matriz de limite liquido.
+            
+        
+            % verificar si se pueden emplear parametros definidos en el tamano del
+            % suelo generado considerando el eje x
             self.x_tamano = x_tamano;
             self.dx = dx;
             self.y_tamano = y_tamano;
@@ -61,8 +82,5 @@ classdef sueloGeneral
             self.vLP( i, :) = self.vLP( i, :) + s .* xor( m_0, m_1 );
         end
 
-%         function 
-%             
-%         end
     end
 end
